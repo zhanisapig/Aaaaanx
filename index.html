@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>機場接送價格表 | Airport Transfer</title>
+  <meta name="description" content="機場接送服務價格與路線一覽表" />
+
+  <style>
+    :root{
+      --bg: #0f172a;        /* 背景深藍 */
+      --card: #ffffffee;    /* 卡片底 */
+      --primary: #0ea5e9;   /* 亮藍 */
+      --text: #0b1324;      /* 文字深色 */
+      --muted: #64748b;     /* 次要文字 */
+      --ring: #bae6fd;      /* 聚焦外框 */
+      --table-stripe: #f8fafc;
+    }
+
+    /* ===== 背景：重複飛機圖案 ===== */
+    body{
+      margin:0;
+      color:var(--text);
+      background-color: var(--bg);
+      /* 內嵌 SVG 當背景圖案（小飛機），以 data URI 方式重複鋪滿 */
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%23ffffff14' stroke-width='2'%3E%3Cpath d='M16 64 l44 0 12 -10 0 -8 -12 -10 -44 0' /%3E%3Cpath d='M72 46 l30 -14 6 6 -22 20'/%3E%3Ccircle cx='18' cy='64' r='2' fill='%23ffffff26'/%3E%3C/g%3E%3C/svg%3E");
+      background-size: 140px 140px;
+    }
+
+    /* ===== 置中容器 ===== */
+    .wrap{
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    /* ===== 頁首卡片 ===== */
+    .hero{
+      background: var(--card);
+      border-radius: 18px;
+      padding: 28px 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.2);
+      backdrop-filter: blur(4px);
+      border: 1px solid #e2e8f0;
+    }
+    .title{
+      margin: 0 0 6px 0;
+      font-size: clamp(22px, 3vw, 32px);
+      letter-spacing: .5px;
+    }
+    .subtitle{
+      margin: 0 0 14px 0;
+      color: var(--muted);
+      font-size: clamp(14px, 2vw, 16px);
+    }
+    .contact{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:10px;
+    }
+    .tag{
+      background:#e0f2fe;
+      border:1px solid var(--ring);
+      color:#075985;
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:14px;
+    }
+
+    /* ===== 表格卡片 ===== */
+    .card{
+      margin-top:18px;
+      background: var(--card);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.2);
+      border: 1px solid #e2e8f0;
+    }
+    .card h2{
+      margin: 6px 6px 14px 6px;
+      font-size: 18px;
+      color:#0b1324;
+    }
+
+    /* ===== 可捲動表格容器（小螢幕避免擠壓） ===== */
+    .table-scroll{
+      overflow:auto;
+      border-radius: 12px;
+      border:1px solid #e2e8f0;
+    }
+
+    table{
+      width:100%;
+      border-collapse: collapse;
+      background:white;
+      font-size: 15px;
+    }
+    thead th{
+      position: sticky;
+      top: 0;
+      background: #f1f5f9;
+      color:#0b1324;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom:1px solid #e2e8f0;
+      white-space: nowrap;
+      z-index:1;
+    }
+    tbody td{
+      padding: 12px 14px;
+      border-bottom:1px solid #f1f5f9;
+    }
+    tbody tr:nth-child(odd){
+      background: var(--table-stripe);
+    }
+    .badge{
+      padding:4px 8px;
+      border-radius: 999px;
+      border:1px solid #e2e8f0;
+      background:#f8fafc;
+      font-size: 12px;
+      color:#1f2937;
+      white-space: nowrap;
+    }
+    .note{
+      font-size: 13px;
+      color: var(--muted);
+      margin-top:10px;
+      line-height:1.6;
+    }
+
+    /* ===== 行動版卡片式（極小螢幕時） ===== */
+    @media (max-width: 480px){
+      thead{ display:none; }
+      table, tbody, tr, td{ display:block; width:100%; }
+      tbody tr{
+        margin:10px 10px 16px 10px;
+        border:1px solid #e2e8f0;
+        border-radius:12px;
+        overflow:hidden;
+        background:white;
+      }
+      tbody td{
+        border:none;
+        padding:10px 12px;
+      }
+      tbody td::before{
+        content: attr(data-label);
+        display:block;
+        font-size:12px;
+        color:var(--muted);
+        margin-bottom:3px;
+      }
+    }
+
+    /* ===== 小互動：表格聚焦、列 hover ===== */
+    tbody tr:hover{
+      outline: 2px solid #e2e8f0;
+      outline-offset: -2px;
+      background:#eef6ff;
+    }
+    a{
+      color:var(--primary);
+      text-decoration:none;
+    }
+    a:hover{ text-decoration:underline; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <section class="hero">
+      <h1 class="title">機場接送價格表</h1>
+      <p class="subtitle">透明收費・專業司機・準時接送｜桃園機場／松山機場</p>
+      <div class="contact">
+        <!-- 改成你的聯絡方式 -->
+        <span class="tag">電話：<a href="tel:+886908232851">+886908232851</a></span>
+        <span class="tag">LINE：<a href="https://lin.ee/JkHMkk9">💬 LINE 聯絡我</a></span>
+        <span class="tag">服務地區：全省加LINE詢問價格</span>
+        <span class="tag">車型：五人座／七人座 / 九人座 / 13人座小巴士</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>單程價格（新台幣，含高速過路費）</h2>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>出發／抵達區域</th>
+              <th>桃園機場 → 市區</th>
+              <th>市區 → 桃園機場</th>
+              <th>松山機場 ⇄ 市區</th>
+              <th>車型</th>
+              <th>備註</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- 每列代表一個城市或行政區；把價格改成你的實際費用 -->
+            <tr>
+              <td data-label="區域">嘉義市</td>
+              <td data-label="桃園機場 → 市區">$4,800</td>
+              <td data-label="市區 → 桃園機場">$4,500</td>
+              <td data-label="松山機場 ⇄ 市區">$5,200</td>
+              <td data-label="車型"><span class="badge">5人座</span>／<span class="badge">7人座 +$200</span></td>
+              <td data-label="備註">含基本等候 30 分鐘</td>
+            </tr>
+            <tr>
+              <td data-label="區域">嘉義縣（民雄／太保）</td>
+              <td data-label="桃園機場 → 市區">$5,000</td>
+              <td data-label="市區 → 桃園機場">$4,700</td>
+              <td data-label="松山機場 ⇄ 市區">$5,400</td>
+              <td data-label="車型"><span class="badge">5人座</span>／<span class="badge">7人座 +$200</span></td>
+              <td data-label="備註">夜間(22:00–06:00) +$300</td>
+            </tr>
+            <tr>
+              <td data-label="區域">台南市區</td>
+              <td data-label="桃園機場 → 市區">$6,200</td>
+              <td data-label="市區 → 桃園機場">$5,900</td>
+              <td data-label="松山機場 ⇄ 市區">$6,700</td>
+              <td data-label="車型"><span class="badge">5人座</span>／<span class="badge">7人座 +$200</span></td>
+              <td data-label="備註">兒童安全座椅 +$100/個</td>
+            </tr>
+            <tr>
+              <td data-label="區域">台中市區</td>
+              <td data-label="桃園機場 → 市區">$3,800</td>
+              <td data-label="市區 → 桃園機場">$3,600</td>
+              <td data-label="松山機場 ⇄ 市區">$4,100</td>
+              <td data-label="車型"><span class="badge">5人座</span>／<span class="badge">7人座 +$200</span></td>
+              <td data-label="備註">夜間(22:00–06:00) +$300</td>
+            </tr>
+            <tr>
+              <td data-label="區域">高雄市區</td>
+              <td data-label="桃園機場 → 市區">$7,200</td>
+              <td data-label="市區 → 桃園機場">$6,900</td>
+              <td data-label="松山機場 ⇄ 市區">$7,600</td>
+              <td data-label="車型"><span class="badge">5人座</span>／<span class="badge">7人座 +$300</span></td>
+              <td data-label="備註">含電子收據</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="note">
+        ※ 價格為參考，實際費用依路況、等候時間與車型調整。<br/>
+        ※ 24 小時皆可預約，建議起飛／降落前 <strong>24 小時</strong> 完成預訂。<br/>
+        ※ 可提供中文／英文／越南文溝通。
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>如何預約</h2>
+      <ol style="margin:0 0 8px 18px; line-height:1.8;">
+        <li>加 LINE 或來電，提供日期、航班、出發地／目的地、人數與行李件數。</li>
+        <li>確認金額與取件位置（航廈、門牌或飯店）。</li>
+        <li>行前一天再次確認，司機會於出發前主動聯繫。</li>
+      </ol>
+      <div class="note">亦可提供長短途包車、商務包車與旅遊行程。</div>
+    </section>
+
+    <footer style="text-align:center; color:#cbd5e1; font-size:13px; margin:22px 0;">
+      © <span id="y"></span> 機場接送服務．All rights reserved.
+    </footer>
+  </div>
+
+  <script>
+    // 自動更新年份
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
